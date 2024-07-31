@@ -1,4 +1,4 @@
-package br.com.facom.api.services;
+package br.com.facom.api.Services;
 
 import br.com.facom.api.DTO.EpiUsuarioDTO;
 import br.com.facom.api.DTO.Mapper.EpiUsuarioMapper;
@@ -6,7 +6,9 @@ import br.com.facom.api.DTO.Paginacao.Pag;
 import br.com.facom.api.Exceptions.ForbbidenHandler;
 import br.com.facom.api.Exceptions.RegistroNaoEncontradoHendler;
 import br.com.facom.api.Model.EpiUsuarioModel;
+import br.com.facom.api.Model.UsuarioModel;
 import br.com.facom.api.Repository.EpiUsuarioRepository;
+import br.com.facom.api.Repository.UsuarioRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
@@ -27,9 +29,12 @@ public class EpiUsuarioService {
     private final EpiUsuarioRepository repository;
     private final EpiUsuarioMapper mapper;
 
-    public EpiUsuarioService(EpiUsuarioRepository repository, EpiUsuarioMapper mapper) {
+    private final UsuarioRepository usuarioRepository;
+
+    public EpiUsuarioService(EpiUsuarioRepository repository, UsuarioRepository usuarioRepository, EpiUsuarioMapper mapper) {
         this.mapper = mapper;
         this.repository = repository;
+        this.usuarioRepository = usuarioRepository;
     }
 
     public Pag<EpiUsuarioDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "id") String sortBy,
@@ -45,7 +50,21 @@ public class EpiUsuarioService {
     }
 
     public EpiUsuarioDTO create(@Valid EpiUsuarioDTO dto) {
-        return mapper.convertToDto(repository.save(mapper.convertToEntity(dto)));
+        EpiUsuarioModel epiUsuarioModel = mapper.convertToEntity(dto);
+        epiUsuarioModel = repository.save(epiUsuarioModel);
+
+        Long usuarioId = dto.idUsuario().getId();
+        UsuarioModel usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RegistroNaoEncontradoHendler(usuarioId));
+
+        if(usuario.getIsVinculado() == 1){
+            throw new ForbbidenHandler("Este usuário já está vinculado a este ou outro Equipamento!");
+        }
+
+        usuario.setIsVinculado(1);
+        usuarioRepository.save(usuario);
+
+        return mapper.convertToDto(epiUsuarioModel);
     }
 
     public EpiUsuarioDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiUsuarioDTO dto) {

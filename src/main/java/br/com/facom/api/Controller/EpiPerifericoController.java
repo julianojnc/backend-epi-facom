@@ -2,7 +2,7 @@ package br.com.facom.api.Controller;
 
 import br.com.facom.api.DTO.EpiPerifericoDTO;
 import br.com.facom.api.DTO.Paginacao.Pag;
-import br.com.facom.api.services.EpiPerifericoService;
+import br.com.facom.api.Services.EpiPerifericoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;

@@ -1,4 +1,4 @@
-package br.com.facom.api.services;
+package br.com.facom.api.Services;
 
 import br.com.facom.api.DTO.Mapper.UsuarioMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;

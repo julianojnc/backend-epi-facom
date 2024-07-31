@@ -15,13 +15,12 @@ public class PerifericoMapper {
         return new PerifericoDTO(
                 model.getId(),
                 model.getNome(),
+                model.getPatrimonio(),
+                model.getServiceTag(),
                 model.getExpressCode(),
                 model.getDataCompra(),
-                model.getDataVinculacao(),
+                model.getDataGarantia(),
                 model.getIsVinculado(),
-                model.getTempoVinculado(),
-                model.getDataDesvinculacao(),
-                model.getRegistroDesvinculacao(),
                 model.getIdMarca()
         );
     }

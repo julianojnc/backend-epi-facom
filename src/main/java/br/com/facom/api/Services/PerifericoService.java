@@ -1,11 +1,11 @@
-package br.com.facom.api.services;
+package br.com.facom.api.Services;
 
-import br.com.facom.api.DTO.MarcaDTO;
-import br.com.facom.api.DTO.Mapper.MarcaMapper;
+import br.com.facom.api.DTO.PerifericoDTO;
+import br.com.facom.api.DTO.Mapper.PerifericoMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;
 import br.com.facom.api.Exceptions.RegistroNaoEncontradoHendler;
-import br.com.facom.api.Model.MarcaModel;
-import br.com.facom.api.Repository.MarcaRepository;
+import br.com.facom.api.Model.PerifericoModel;
+import br.com.facom.api.Repository.PerifericoRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
@@ -21,33 +21,34 @@ import java.util.stream.Collectors;
 
 @Validated
 @Service
-public class MarcaService {
+public class PerifericoService {
 
-    private final MarcaRepository repository;
-    private final MarcaMapper mapper;
+    private final PerifericoRepository repository;
+    private final PerifericoMapper mapper;
 
-    public MarcaService(MarcaRepository repository, MarcaMapper mapper) {
+    public PerifericoService(PerifericoRepository repository, PerifericoMapper mapper) {
         this.mapper = mapper;
         this.repository = repository;
     }
 
-    public Pag<MarcaDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
-                              @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+
+    public Pag<PerifericoDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
+                                   @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<MarcaModel> page = repository.findAll(PageRequest.of(pageNumber, pageSize, sort));
-        List<MarcaDTO> lista = page.stream().map(mapper::convertToDto).collect(Collectors.toList());
+        Page<PerifericoModel> page = repository.findAll(PageRequest.of(pageNumber, pageSize, sort));
+        List<PerifericoDTO> lista = page.stream().map(mapper::convertToDto).collect(Collectors.toList());
         return new Pag<>(lista, page.getTotalElements(), page.getTotalPages());
     }
 
-    public MarcaDTO findById(@NotNull @Positive Long id) {
+    public PerifericoDTO findById(@NotNull @Positive Long id) {
         return repository.findById(id).map(mapper::convertToDto).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
     }
 
-    public MarcaDTO create(@Valid MarcaDTO dto) {
+    public PerifericoDTO create(@Valid PerifericoDTO dto) {
         return mapper.convertToDto(repository.save(mapper.convertToEntity(dto)));
     }
 
-    public MarcaDTO update(@NotNull @Positive Long id, @NotNull @Valid MarcaDTO dto) {
+    public PerifericoDTO update(@NotNull @Positive Long id, @NotNull @Valid PerifericoDTO dto) {
         return repository.findById(id)
                 .map(registroEncontrado -> {
                     BeanUtils.copyProperties(dto, registroEncontrado);

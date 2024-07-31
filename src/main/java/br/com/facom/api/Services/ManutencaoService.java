@@ -1,12 +1,11 @@
-package br.com.facom.api.services;
+package br.com.facom.api.Services;
 
-import br.com.facom.api.DTO.EpiDTO;
-import br.com.facom.api.DTO.Mapper.EpiMapper;
+import br.com.facom.api.DTO.ManutencaoDTO;
+import br.com.facom.api.DTO.Mapper.ManutencaoMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;
-import br.com.facom.api.Exceptions.ForbbidenHandler;
 import br.com.facom.api.Exceptions.RegistroNaoEncontradoHendler;
-import br.com.facom.api.Model.EpiModel;
-import br.com.facom.api.Repository.EpiRepository;
+import br.com.facom.api.Model.ManutencaoModel;
+import br.com.facom.api.Repository.ManutencaoRepository;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
@@ -22,34 +21,33 @@ import java.util.stream.Collectors;
 
 @Validated
 @Service
-public class EpiService {
+public class ManutencaoService {
 
-    private final EpiRepository repository;
-    private final EpiMapper mapper;
+    private final ManutencaoRepository repository;
+    private final ManutencaoMapper mapper;
 
-    public EpiService(EpiRepository repository, EpiMapper mapper) {
+    public ManutencaoService(ManutencaoRepository repository, ManutencaoMapper mapper) {
         this.mapper = mapper;
         this.repository = repository;
     }
 
-
-    public Pag<EpiDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
-                            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+    public Pag<ManutencaoDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "dataIniManutencao") String sortBy,
+                                   @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
         Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
-        Page<EpiModel> page = repository.findAll(PageRequest.of(pageNumber, pageSize, sort));
-        List<EpiDTO> lista = page.stream().map(mapper::convertToDto).collect(Collectors.toList());
+        Page<ManutencaoModel> page = repository.findAll(PageRequest.of(pageNumber, pageSize, sort));
+        List<ManutencaoDTO> lista = page.stream().map(mapper::convertToDto).collect(Collectors.toList());
         return new Pag<>(lista, page.getTotalElements(), page.getTotalPages());
     }
 
-    public EpiDTO findById(@NotNull @Positive Long id){
+    public ManutencaoDTO findById(@NotNull @Positive Long id) {
         return repository.findById(id).map(mapper::convertToDto).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
     }
 
-    public EpiDTO create(@Valid EpiDTO dto){
+    public ManutencaoDTO create(@Valid ManutencaoDTO dto) {
         return mapper.convertToDto(repository.save(mapper.convertToEntity(dto)));
     }
 
-    public EpiDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiDTO dto){
+    public ManutencaoDTO update(@NotNull @Positive Long id, @NotNull @Valid ManutencaoDTO dto) {
         return repository.findById(id)
                 .map(registroEncontrado -> {
                     BeanUtils.copyProperties(dto, registroEncontrado);

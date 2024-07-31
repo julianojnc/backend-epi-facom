@@ -2,7 +2,7 @@ package br.com.facom.api.Controller;
 
 import br.com.facom.api.DTO.EpiDTO;
 import br.com.facom.api.DTO.Paginacao.Pag;
-import br.com.facom.api.services.EpiService;
+import br.com.facom.api.Services.EpiService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.factory.annotation.Autowired;

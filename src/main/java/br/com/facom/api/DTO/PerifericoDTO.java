@@ -7,12 +7,11 @@ import jakarta.validation.constraints.NotNull;
 public record PerifericoDTO(
         Long id,
         @NotNull String nome,
+        String patrimonio,
+        String serviceTag,
         String expressCode,
         LocalDate dataCompra,
-        @NotNull LocalDate dataVinculacao,
+        LocalDate dataGarantia,
         int isVinculado,
-        int tempoVinculado,
-        LocalDate dataDesvinculacao,
-        String registroDesvinculacao,
         MarcaModel idMarca
 ) {}

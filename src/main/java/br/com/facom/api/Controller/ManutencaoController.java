@@ -2,7 +2,7 @@ package br.com.facom.api.Controller;
 
 import br.com.facom.api.DTO.ManutencaoDTO;
 import br.com.facom.api.DTO.Paginacao.Pag;
-import br.com.facom.api.services.ManutencaoService;
+import br.com.facom.api.Services.ManutencaoService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;

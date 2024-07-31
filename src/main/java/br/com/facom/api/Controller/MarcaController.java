@@ -2,7 +2,7 @@ package br.com.facom.api.Controller;
 
 import br.com.facom.api.DTO.MarcaDTO;
 import br.com.facom.api.DTO.Paginacao.Pag;
-import br.com.facom.api.services.MarcaService;
+import br.com.facom.api.Services.MarcaService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
