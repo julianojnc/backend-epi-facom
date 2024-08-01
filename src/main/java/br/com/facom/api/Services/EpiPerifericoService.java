@@ -3,13 +3,17 @@ package br.com.facom.api.Services;
 import br.com.facom.api.DTO.EpiPerifericoDTO;
 import br.com.facom.api.DTO.Mapper.EpiPerifericoMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;
-import br.com.facom.api.DTO.PerifericoDTO;
 import br.com.facom.api.Exceptions.ForbbidenHandler;
 import br.com.facom.api.Exceptions.RegistroNaoEncontradoHendler;
 import br.com.facom.api.Model.EpiPerifericoModel;
 import br.com.facom.api.Model.PerifericoModel;
 import br.com.facom.api.Repository.EpiPerifericoRepository;
 import br.com.facom.api.Repository.PerifericoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatch;
+import com.github.fge.jsonpatch.JsonPatchException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import org.springframework.beans.BeanUtils;
@@ -22,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Validated
@@ -32,6 +35,7 @@ public class EpiPerifericoService {
     private final EpiPerifericoRepository repository;
     private final EpiPerifericoMapper mapper;
     private final PerifericoRepository perifericoRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     public EpiPerifericoService(EpiPerifericoRepository repository, EpiPerifericoMapper mapper, PerifericoRepository perifericoRepository) {
         this.mapper = mapper;
@@ -65,7 +69,19 @@ public class EpiPerifericoService {
     public EpiPerifericoDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiPerifericoDTO dto) {
         return repository.findById(id)
                 .map(registroEncontrado -> {
-                    BeanUtils.copyProperties(dto, registroEncontrado);
+                    if (registroEncontrado.getDataDesvinculacao() == null) {
+                        registroEncontrado.setDataDesvinculacao(LocalDate.now());
+                    }
+                    Long perifericoId = dto.idPeriferico().getId();  //IdPeriferico() retorna um PerifericoModel
+                    PerifericoModel periferico = perifericoRepository.findById(perifericoId)
+                            .orElseThrow(() -> new RegistroNaoEncontradoHendler(perifericoId));
+
+                    if (periferico.getIsVinculado() == 1) {
+                        periferico.setIsVinculado(0);
+                    }
+                    // Atualiza o campo isVinculado do Periférico associado
+                    perifericoRepository.save(periferico);
+                    registroEncontrado.setRegistroDesvinculacao(dto.registroDesvinculacao());
                     return mapper.convertToDto(repository.save(registroEncontrado));
                 }).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
     }
@@ -75,7 +91,9 @@ public class EpiPerifericoService {
     }
 
     /*
-     * Método sem retorno para validação da vinculação do periferico e configuração da data da vinculação*/
+     * Método sem retorno para validação da vinculação do periferico e configuração da data da vinculação
+     * @Param EpiPerifericoModel - classe entidade da epiPeriferico
+     * @Param EpiPerifericoDTO - classe DTO de EpiPeriferico*/
     private void isVinculado(EpiPerifericoModel epiPerifericoModel, EpiPerifericoDTO dto) {
 
         if (epiPerifericoModel.getDataVinculacao() == null) {
@@ -96,5 +114,4 @@ public class EpiPerifericoService {
         periferico.setIsVinculado(1);
         perifericoRepository.save(periferico);
     }
-
 }

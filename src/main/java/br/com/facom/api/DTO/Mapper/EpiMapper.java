@@ -12,7 +12,17 @@ public class EpiMapper {
         if(model == null){
             return null;
         }
-        return new EpiDTO(model.getId(), model.getNome(), model.getPatrimonio(), model.getLocal(), model.getSetor(), model.getDataCompra(), model.getDataGarantia(), model.getIdMarca());
+        return new EpiDTO(
+                model.getId(),
+                model.getNome(),
+                model.getPatrimonio(),
+                model.getServiceTag(),
+                model.getExpressCode(),
+                model.getLocal(),
+                model.getSetor(),
+                model.getDataCompra(),
+                model.getDataGarantia(),
+                model.getIdMarca());
     }
 
     public EpiModel convertToEntity(EpiDTO dto){

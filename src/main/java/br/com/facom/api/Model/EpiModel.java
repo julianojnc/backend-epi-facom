@@ -24,6 +24,12 @@ public class EpiModel extends RepresentationModel<EpiModel> {
     @Column(name="patrimonio", nullable = false)
     private String patrimonio;
 
+    @Column(name = "service_tag")
+    private String serviceTag;
+
+    @Column(name = "express_code")
+    private String expressCode;
+
     @Column(name="local")
     private String local;
 

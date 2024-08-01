@@ -2,7 +2,9 @@ package br.com.facom.api.Controller;
 
 import br.com.facom.api.DTO.EpiPerifericoDTO;
 import br.com.facom.api.DTO.Paginacao.Pag;
+import br.com.facom.api.Model.EpiPerifericoModel;
 import br.com.facom.api.Services.EpiPerifericoService;
+import com.github.fge.jsonpatch.JsonPatch;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.NotNull;
@@ -52,4 +54,5 @@ public class EpiPerifericoController {
     public void delete(@PathVariable @Positive Long id) {
         service.delete(id);
     }
+
 }

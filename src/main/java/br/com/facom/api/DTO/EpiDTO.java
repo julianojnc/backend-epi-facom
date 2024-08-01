@@ -8,6 +8,8 @@ public record EpiDTO(
         Long id,
         @NotNull String nome,
         @NotNull String patrimonio,
+        String serviceTag,
+        String expressCode,
         String local,
         String setor,
         LocalDate dataCompra,

@@ -36,20 +36,8 @@ public class PerifericoModel extends RepresentationModel<PerifericoModel> {
     @Column(name = "data_garantia")
     private LocalDate dataGarantia;
 
-    /*@Column(name = "data_vinculacao")
-    private LocalDate dataVinculacao;*/
-
     @Column(name = "is_vinculado", columnDefinition = "INTEGER DEFAULT 0")
     private int isVinculado = 0;
-
-    /*@Column(name = "tempo_vinculado",columnDefinition = "INTEGER DEFAULT 0")
-    private int tempoVinculado=0;*/
-
-    /*@Column(name = "data_desvinculacao")
-    private LocalDate dataDesvinculacao;*/
-
-    /*@Column(name = "registro_desvinculacao")
-    private String registroDesvinculacao;*/
 
     @ManyToOne
     @JoinColumn(name = "id_marca", referencedColumnName = "id")
