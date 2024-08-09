@@ -70,6 +70,14 @@ public class EpiUsuarioService {
     public EpiUsuarioDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiUsuarioDTO dto) {
         return repository.findById(id)
                 .map(registroEncontrado -> {
+                    Long usuarioId = dto.idUsuario().getId();
+                    UsuarioModel usuario = usuarioRepository.findById(usuarioId).orElseThrow(()->new RegistroNaoEncontradoHendler(usuarioId));
+
+                    if(usuario.getIsVinculado()==1){
+                        usuario.setIsVinculado(0);
+                    }
+
+                    usuarioRepository.save(usuario);
                     BeanUtils.copyProperties(dto, registroEncontrado);
                     return mapper.convertToDto(repository.save(registroEncontrado));
                 }).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
