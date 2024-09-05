@@ -21,13 +21,13 @@ public class PerifericoModel extends RepresentationModel<PerifericoModel> {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "patrimonio")
+    @Column(name = "patrimonio", unique = true)
     private String patrimonio;
 
-    @Column(name = "service_tag")
+    @Column(name = "service_tag", unique = true)
     private String serviceTag;
 
-    @Column(name = "express_code")
+    @Column(name = "express_code",unique = true)
     private String expressCode;
 
     @Column(name = "data_compra")

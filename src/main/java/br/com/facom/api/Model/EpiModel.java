@@ -21,13 +21,13 @@ public class EpiModel extends RepresentationModel<EpiModel> {
     @Column(name="nome", nullable = false)
     private String nome;
 
-    @Column(name="patrimonio", nullable = false)
+    @Column(name="patrimonio", nullable = false, unique = true)
     private String patrimonio;
 
-    @Column(name = "service_tag")
+    @Column(name = "service_tag", unique = true)
     private String serviceTag;
 
-    @Column(name = "express_code")
+    @Column(name = "express_code", unique = true)
     private String expressCode;
 
     @Column(name="local")

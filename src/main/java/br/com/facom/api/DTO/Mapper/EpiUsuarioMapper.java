@@ -12,7 +12,12 @@ public class EpiUsuarioMapper {
         if (model == null) {
             return null;
         }
-        return new EpiUsuarioDTO(model.getId(), model.getIdEpi(), model.getIdUsuario());
+        return new EpiUsuarioDTO(
+                model.getId(),
+                model.getIdEpi(),
+                model.getIdUsuario(),
+                model.getDataInicio(),
+                model.getDataFim());
     }
 
     public EpiUsuarioModel convertToEntity(EpiUsuarioDTO dto) {

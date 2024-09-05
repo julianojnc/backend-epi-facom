@@ -3,6 +3,7 @@ package br.com.facom.api.Services;
 import br.com.facom.api.DTO.EpiDTO;
 import br.com.facom.api.DTO.Mapper.EpiMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;
+import br.com.facom.api.Exceptions.ForbbidenHandler;
 import br.com.facom.api.Exceptions.RegistroNaoEncontradoHendler;
 import br.com.facom.api.Model.EpiModel;
 import br.com.facom.api.Repository.EpiRepository;
@@ -45,7 +46,14 @@ public class EpiService {
     }
 
     public EpiDTO create(@Valid EpiDTO dto){
+        EpiModel model = mapper.convertToEntity(dto);
+        if(repository.existsByPatrimonio(model.getPatrimonio())){
+            throw new ForbbidenHandler("patrimonio ja existe");
+        }
+
+
         return mapper.convertToDto(repository.save(mapper.convertToEntity(dto)));
+
     }
 
     public EpiDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiDTO dto){

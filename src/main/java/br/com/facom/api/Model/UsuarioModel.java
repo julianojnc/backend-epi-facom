@@ -19,10 +19,10 @@ public class UsuarioModel extends RepresentationModel<UsuarioModel> {
     @Column(name = "nome", nullable = false)
     private String nome;
 
-    @Column(name = "tel_contato")
+    @Column(name = "tel_contato", unique = true)
     private String telContato;
 
-    @Column(name = "email")
+    @Column(name = "email", unique = true)
     private String email;
 
     @Column(name = "is_vinculado")

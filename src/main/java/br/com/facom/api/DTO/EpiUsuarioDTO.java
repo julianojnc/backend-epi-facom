@@ -5,8 +5,12 @@ import br.com.facom.api.Model.PerifericoModel;
 import br.com.facom.api.Model.UsuarioModel;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDate;
+
 public record EpiUsuarioDTO(
         Long id,
         @NotNull EpiModel idEpi,
-        @NotNull UsuarioModel idUsuario
+        @NotNull UsuarioModel idUsuario,
+        LocalDate dataInicio,
+        LocalDate dataFim
 ) {}

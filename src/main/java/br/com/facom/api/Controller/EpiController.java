@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @Validated
 @RestController
-@RequestMapping("/api/epi")
+@RequestMapping("/epi")
 public class EpiController {
 
     @Autowired

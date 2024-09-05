@@ -1,12 +1,15 @@
 package br.com.facom.api.DTO;
 
 import java.time.LocalDate;
+
 import br.com.facom.api.Model.MarcaModel;
+import jakarta.persistence.UniqueConstraint;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record EpiDTO(
         Long id,
-        @NotNull String nome,
+        @NotBlank(message = "O nome não deve ser nulo!") String nome,
         @NotNull String patrimonio,
         String serviceTag,
         String expressCode,
@@ -15,4 +18,5 @@ public record EpiDTO(
         LocalDate dataCompra,
         LocalDate dataGarantia,
         MarcaModel idMarca
-) {}
+) {
+}
