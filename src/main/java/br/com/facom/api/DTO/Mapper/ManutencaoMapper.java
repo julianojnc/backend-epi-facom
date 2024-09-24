@@ -18,6 +18,9 @@ public class ManutencaoMapper {
                 model.getValor(),
                 model.getDataIniManutencao(),
                 model.getDataRetManutencao(),
+                model.getFileName(),
+                model.getFileType(),
+                model.getFilePath(),
                 model.getIdEpi(),
                 model.getIdPeriferico()
         );

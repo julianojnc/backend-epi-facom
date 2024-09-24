@@ -13,5 +13,8 @@ public record PerifericoDTO(
         LocalDate dataCompra,
         LocalDate dataGarantia,
         int isVinculado,
+        String fileName,
+        String fileType,
+        String filePath,
         MarcaModel idMarca
 ) {}

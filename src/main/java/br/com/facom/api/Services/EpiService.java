@@ -15,9 +15,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 @Validated
 @Service
@@ -31,24 +39,27 @@ public class EpiService {
         this.repository = repository;
     }
 
-
-    public Pag<EpiDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
-                            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+    public Pag<EpiDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber,
+            @RequestParam(name = "s") @Positive @Max(50) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
         Page<EpiModel> page = repository.findAll(PageRequest.of(pageNumber, pageSize, sort));
         List<EpiDTO> lista = page.stream().map(mapper::convertToDto).collect(Collectors.toList());
         return new Pag<>(lista, page.getTotalElements(), page.getTotalPages());
     }
 
-    public EpiDTO findById(@NotNull @Positive Long id){
-        return repository.findById(id).map(mapper::convertToDto).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
+    public EpiDTO findById(@NotNull @Positive Long id) {
+        return repository.findById(id).map(mapper::convertToDto)
+                .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
     }
 
-    public EpiDTO create(@Valid EpiDTO dto){
+    public EpiDTO create(@Valid EpiDTO dto) {
         return mapper.convertToDto(repository.save(mapper.convertToEntity(dto)));
     }
 
-    public EpiDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiDTO dto){
+    public EpiDTO update(@NotNull @Positive Long id, @NotNull @Valid EpiDTO dto) {
         return repository.findById(id)
                 .map(registroEncontrado -> {
                     BeanUtils.copyProperties(dto, registroEncontrado);
@@ -58,6 +69,29 @@ public class EpiService {
 
     public void delete(@NotNull @Positive Long id) {
         repository.delete(repository.findById(id).orElseThrow(() -> new RegistroNaoEncontradoHendler(id)));
+    }
+
+    public String storeFile(Long id, MultipartFile file) throws IOException {
+        EpiModel epi = repository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
+
+        // Defina o diretório onde os arquivos serão salvos
+        String uploadDir = "C:\\uploads\\epi-files\\";
+        String fileName = epi.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
+        Path filePath = Paths.get(uploadDir + fileName);
+
+        // Salve o arquivo no caminho definido
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Atualize os campos do EPI com os metadados do arquivo
+        epi.setFileName(fileName);
+        epi.setFileType(file.getContentType());
+        epi.setFilePath(filePath.toString()); // Aqui estamos preenchendo o caminho do arquivo
+
+        // Salve a entidade EPI com as informações atualizadas
+        EpiModel updatedEpi = repository.save(epi);
+
+        return fileName;
     }
 
 }
