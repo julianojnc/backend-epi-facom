@@ -33,22 +33,6 @@ public class EpiController {
         return ResponseEntity.ok("Sucesso no Upload do Arquivo: " + fileName);
     }
 
-    // @GetMapping("/{id}/downloadFile")
-    // public ResponseEntity<Resource> downloadFile(@PathVariable Long id) throws IOException {
-    //     EpiModel epi = service.findById(id);
-    //     Path filePath = Paths.get("/uploads/epi-files/" + epi.getFileName());
-
-    //     Resource resource = new UrlResource(filePath.toUri());
-    //     if (resource.exists()) {
-    //         return ResponseEntity.ok()
-    //                 .contentType(MediaType.parseMediaType(epi.getFileType()))
-    //                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
-    //                 .body(resource);
-    //     } else {
-    //         throw new FileNotFoundException("File not found " + epi.getFileName());
-    //     }
-    // }
-
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
     public Pag<EpiDTO> getAllEpi(@RequestParam(name = "p", defaultValue = "0") @PositiveOrZero int pageNumber,
