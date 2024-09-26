@@ -30,7 +30,7 @@ public class EpiUsuarioModel extends RepresentationModel<EpiUsuarioModel> {
     @Column(name = "data_inicio", nullable = false, columnDefinition = "DATE DEFAULT CURRENT_DATE")
     private LocalDate dataInicio;
 
-    @Column(name = "data_fim", columnDefinition = "DATE DEFAULT CURRENT_DATE")
+    @Column(name = "data_fim", columnDefinition = "DATE")
     private LocalDate dataFim;
 
     @PrePersist
