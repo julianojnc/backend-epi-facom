@@ -8,15 +8,17 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 public record EpiDTO(
-        Long id,
-        @NotBlank(message = "O nome não deve ser nulo!") String nome,
-        @NotNull String patrimonio,
-        String serviceTag,
-        String expressCode,
-        String local,
-        String setor,
-        LocalDate dataCompra,
-        LocalDate dataGarantia,
-        MarcaModel idMarca
-) {
+                Long id,
+                @NotNull String nome,
+                @NotNull String patrimonio,
+                String serviceTag,
+                String expressCode,
+                String local,
+                String setor,
+                LocalDate dataCompra,
+                LocalDate dataGarantia,
+                MarcaModel idMarca,
+                String fileName, // add the file fields here
+                String fileType,
+                String filePath) {
 }

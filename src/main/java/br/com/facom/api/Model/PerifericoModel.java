@@ -10,12 +10,12 @@ import java.time.LocalDate;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-@Table(name="periferico")
+@Table(name = "periferico")
 public class PerifericoModel extends RepresentationModel<PerifericoModel> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="id")
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "nome", nullable = false)
@@ -38,6 +38,15 @@ public class PerifericoModel extends RepresentationModel<PerifericoModel> {
 
     @Column(name = "is_vinculado", columnDefinition = "INTEGER DEFAULT 0")
     private int isVinculado = 0;
+
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_type")
+    private String fileType;
+
+    @Column(name = "file_path")
+    private String filePath;
 
     @ManyToOne
     @JoinColumn(name = "id_marca", referencedColumnName = "id")

@@ -8,10 +8,11 @@ import org.springframework.stereotype.Component;
 @Component
 public class EpiMapper {
 
-    public EpiDTO convertToDto(EpiModel model){
-        if(model == null){
+    public EpiDTO convertToDto(EpiModel model) {
+        if (model == null) {
             return null;
         }
+
         return new EpiDTO(
                 model.getId(),
                 model.getNome(),
@@ -22,16 +23,19 @@ public class EpiMapper {
                 model.getSetor(),
                 model.getDataCompra(),
                 model.getDataGarantia(),
-                model.getIdMarca());
+                model.getIdMarca(),
+                model.getFileName(),
+                model.getFileType(),
+                model.getFilePath());
     }
 
-    public EpiModel convertToEntity(EpiDTO dto){
+    public EpiModel convertToEntity(EpiDTO dto) {
 
-        if(dto == null){
+        if (dto == null) {
             return null;
         }
         EpiModel model = new EpiModel();
-        if (dto.id()!=null){
+        if (dto.id() != null) {
             model.setId(dto.id());
         }
         BeanUtils.copyProperties(dto, model);

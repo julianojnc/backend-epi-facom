@@ -21,6 +21,9 @@ public class PerifericoMapper {
                 model.getDataCompra(),
                 model.getDataGarantia(),
                 model.getIsVinculado(),
+                model.getFileName(),
+                model.getFileType(),
+                model.getFilePath(),
                 model.getIdMarca()
         );
     }

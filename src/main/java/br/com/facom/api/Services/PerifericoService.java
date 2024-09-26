@@ -4,6 +4,7 @@ import br.com.facom.api.DTO.PerifericoDTO;
 import br.com.facom.api.DTO.Mapper.PerifericoMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;
 import br.com.facom.api.Exceptions.RegistroNaoEncontradoHendler;
+import br.com.facom.api.Model.EpiModel;
 import br.com.facom.api.Model.PerifericoModel;
 import br.com.facom.api.Repository.PerifericoRepository;
 import jakarta.validation.Valid;
@@ -15,7 +16,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +65,29 @@ public class PerifericoService {
 
     public void delete(@NotNull @Positive Long id) {
         repository.delete(repository.findById(id).orElseThrow(() -> new RegistroNaoEncontradoHendler(id)));
+    }
+
+    public String storeFile(Long id, MultipartFile file) throws IOException {
+        PerifericoModel periferico = repository.findById(id)
+                .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
+
+        // Defina o diretório onde os arquivos serão salvos
+        String uploadDir = "C:\\uploads\\periferico-files\\";
+        String fileName = periferico.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
+        Path filePath = Paths.get(uploadDir + fileName);
+
+        // Salve o arquivo no caminho definido
+        Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
+
+        // Atualize os campos do Periferico com os metadados do arquivo
+        periferico.setFileName(fileName);
+        periferico.setFileType(file.getContentType());
+        periferico.setFilePath(filePath.toString()); // Aqui estamos preenchendo o caminho do arquivo
+
+        // Salve a entidade Periferico com as informações atualizadas
+        PerifericoModel updatedPeriferico = repository.save(periferico);
+
+        return fileName;
     }
 
 }

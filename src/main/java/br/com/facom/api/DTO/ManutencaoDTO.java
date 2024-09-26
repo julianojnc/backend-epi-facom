@@ -11,6 +11,9 @@ public record ManutencaoDTO(
         float valor,
         LocalDate dataIniManutencao,
         LocalDate dataRetManutencao,
+        String fileName,
+        String fileType,
+        String filePath,
         EpiModel idEpi,
         PerifericoModel idPeriferico
 ) {}

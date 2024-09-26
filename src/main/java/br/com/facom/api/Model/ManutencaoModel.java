@@ -30,6 +30,15 @@ public class ManutencaoModel extends RepresentationModel<ManutencaoModel> {
     @Column(name="data_retorno_manutencao")
     private LocalDate dataRetManutencao;
 
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "file_type")
+    private String fileType;
+
+    @Column(name = "file_path")
+    private String filePath;
+
     @ManyToOne
     @JoinColumn(name="id_epi", referencedColumnName = "id")
     private EpiModel idEpi;
