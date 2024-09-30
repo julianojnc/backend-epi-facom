@@ -17,7 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Validated
 @RestController
-@RequestMapping("/epi")
+@RequestMapping("api/epi")
 public class EpiController {
 
     @Autowired
