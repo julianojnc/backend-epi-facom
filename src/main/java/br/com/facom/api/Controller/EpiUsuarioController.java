@@ -52,4 +52,9 @@ public class EpiUsuarioController {
     public void delete(@PathVariable @Positive Long id) {
         service.delete(id);
     }
+
+    @ResponseStatus(code = HttpStatus.OK)
+    @PatchMapping("/{id}/desvincula")
+    public void desvincula(@PathVariable Long id){ service.desvincula(id);}
+
 }
