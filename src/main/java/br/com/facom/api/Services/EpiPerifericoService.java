@@ -1,6 +1,7 @@
 package br.com.facom.api.Services;
 
 import br.com.facom.api.DTO.EpiPerifericoDTO;
+import br.com.facom.api.DTO.EpiPerifericoDevolucaoDTO;
 import br.com.facom.api.DTO.Mapper.EpiPerifericoMapper;
 import br.com.facom.api.DTO.Paginacao.Pag;
 import br.com.facom.api.Exceptions.ForbbidenHandler;
@@ -20,12 +21,17 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Validated
@@ -90,6 +96,35 @@ public class EpiPerifericoService {
         repository.delete(repository.findById(id).orElseThrow(() -> new RegistroNaoEncontradoHendler(id)));
     }
 
+    public ResponseEntity<Object> desvincula(@Positive Long id, @Valid EpiPerifericoDevolucaoDTO dto) {
+
+        EpiPerifericoModel epiPeriferico = repository.findById(id).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
+        PerifericoModel periferico = epiPeriferico.getIdPeriferico();
+        String registroDesvinculacao = dto.registro();
+        LocalDate hoje = LocalDate.now();
+
+        if (periferico.getIsVinculado() == 1) {
+            periferico.setIsVinculado(0);
+        }
+
+        if (dto.dataDevolucao() == null) {
+            epiPeriferico.setDataDesvinculacao(hoje);
+        }
+
+        epiPeriferico.setRegistroDesvinculacao(registroDesvinculacao);
+
+        try{
+            repository.save(epiPeriferico);
+            perifericoRepository.save(periferico);
+
+            return ResponseEntity.status(HttpStatus.OK).body("Equipamentos desvinculados com sucesso!");
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocorreu um erro ao desvincular os equipamentos. Contate o ADM.");
+        }
+
+
+    }
+
     /*
      * Método sem retorno para validação da vinculação do periferico e configuração da data da vinculação
      * @Param EpiPerifericoModel - classe entidade da epiPeriferico
@@ -99,8 +134,6 @@ public class EpiPerifericoService {
         if (epiPerifericoModel.getDataVinculacao() == null) {
             epiPerifericoModel.setDataVinculacao(LocalDate.now());
         }
-
-        repository.save(epiPerifericoModel);
 
         // Obtém o Periférico associado a partir do EpiPerifericoModel salvo
         Long perifericoId = dto.idPeriferico().getId();  //IdPeriferico() retorna um PerifericoModel
@@ -112,6 +145,8 @@ public class EpiPerifericoService {
         }
         // Atualiza o campo isVinculado do Periférico associado
         periferico.setIsVinculado(1);
+        repository.save(epiPerifericoModel);
         perifericoRepository.save(periferico);
     }
+
 }

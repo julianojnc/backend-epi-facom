@@ -1,6 +1,7 @@
 package br.com.facom.api.Controller;
 
 import br.com.facom.api.DTO.EpiPerifericoDTO;
+import br.com.facom.api.DTO.EpiPerifericoDevolucaoDTO;
 import br.com.facom.api.DTO.Paginacao.Pag;
 import br.com.facom.api.Model.EpiPerifericoModel;
 import br.com.facom.api.Services.EpiPerifericoService;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,6 +55,11 @@ public class EpiPerifericoController {
     @DeleteMapping("/{id}")
     public void delete(@PathVariable @Positive Long id) {
         service.delete(id);
+    }
+
+    @PatchMapping("/{id}/desvincula")
+    public ResponseEntity<Object> desvincula(@PathVariable Long id, @RequestBody EpiPerifericoDevolucaoDTO dto){
+        return service.desvincula(id, dto);
     }
 
 }
