@@ -78,7 +78,7 @@ public class EpiService {
                 .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
 
         // Defina o diretório onde os arquivos serão salvos
-        String uploadDir = "C:\\uploads\\epi-files\\";
+        String uploadDir = "C:\\nota-fiscais\\eqp-nfe\\";
         String fileName = epi.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
         Path filePath = Paths.get(uploadDir + fileName);
 

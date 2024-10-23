@@ -72,7 +72,7 @@ public class PerifericoService {
                 .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
 
         // Defina o diretório onde os arquivos serão salvos
-        String uploadDir = "C:\\uploads\\periferico-files\\";
+        String uploadDir = "C:\\nota-fiscais\\periferico-nfe\\";
         String fileName = periferico.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
         Path filePath = Paths.get(uploadDir + fileName);
 

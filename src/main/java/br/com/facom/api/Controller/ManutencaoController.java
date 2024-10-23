@@ -29,9 +29,10 @@ public class ManutencaoController {
     @PostMapping("/{id}/uploadFile")
     public ResponseEntity<String> uploadFile(@PathVariable Long id, @RequestParam("file") MultipartFile file)
             throws IOException {
-        if (file.isEmpty() || !"application/pdf".equals(file.getContentType())) {
-            return ResponseEntity.badRequest().body("Arquivo Invalido. Somente aceito Arquivos PDF.");
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Arquivo Invalido. O arquivo está vazio.");
         }
+
         String fileName = service.storeFile(id, file);
         return ResponseEntity.ok("Sucesso no Upload do Arquivo: " + fileName);
     }

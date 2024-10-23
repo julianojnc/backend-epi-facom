@@ -29,19 +29,21 @@ public class PerifericoController {
     @PostMapping("/{id}/uploadFile")
     public ResponseEntity<String> uploadFile(@PathVariable Long id, @RequestParam("file") MultipartFile file)
             throws IOException {
-        if (file.isEmpty() || !"application/pdf".equals(file.getContentType())) {
-            return ResponseEntity.badRequest().body("Arquivo Invalido. Somente aceito Arquivos PDF.");
+        if (file.isEmpty()) {
+            return ResponseEntity.badRequest().body("Arquivo Invalido. O arquivo está vazio.");
         }
+
         String fileName = service.storeFile(id, file);
         return ResponseEntity.ok("Sucesso no Upload do Arquivo: " + fileName);
     }
 
     @GetMapping
     @ResponseStatus(code = HttpStatus.OK)
-    public Pag<PerifericoDTO> getAllPeriferico(@RequestParam(name = "p", defaultValue = "0") @PositiveOrZero int pageNumber,
-                                               @RequestParam(name = "s", defaultValue = "10") @Positive @Max(50) int pageSize,
-                                               @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
-                                               @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+    public Pag<PerifericoDTO> getAllPeriferico(
+            @RequestParam(name = "p", defaultValue = "0") @PositiveOrZero int pageNumber,
+            @RequestParam(name = "s", defaultValue = "10") @Positive @Max(50) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
         return service.list(pageNumber, pageSize, sortBy, sortDir);
     }
 
