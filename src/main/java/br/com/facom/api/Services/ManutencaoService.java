@@ -71,7 +71,7 @@ public class ManutencaoService {
                 .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
 
         // Defina o diretório onde os arquivos serão salvos
-        String uploadDir = "C:\\nota-fiscais\\manutencao-nfe\\";
+        String uploadDir = "C:\\nota-fiscais\\public\\manutencao-nfe\\";
         String fileName = manutencao.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
         Path filePath = Paths.get(uploadDir + fileName);
 

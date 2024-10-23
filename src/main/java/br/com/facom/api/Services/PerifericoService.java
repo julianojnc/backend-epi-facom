@@ -38,17 +38,20 @@ public class PerifericoService {
         this.repository = repository;
     }
 
-
-    public Pag<PerifericoDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber, @RequestParam(name = "s") @Positive @Max(50) int pageSize, @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
-                                   @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
-        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending() : Sort.by(sortBy).descending();
+    public Pag<PerifericoDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber,
+            @RequestParam(name = "s") @Positive @Max(50) int pageSize,
+            @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
+            @RequestParam(value = "sortDir", defaultValue = "asc") String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? Sort.by(sortBy).ascending()
+                : Sort.by(sortBy).descending();
         Page<PerifericoModel> page = repository.findAll(PageRequest.of(pageNumber, pageSize, sort));
         List<PerifericoDTO> lista = page.stream().map(mapper::convertToDto).collect(Collectors.toList());
         return new Pag<>(lista, page.getTotalElements(), page.getTotalPages());
     }
 
     public PerifericoDTO findById(@NotNull @Positive Long id) {
-        return repository.findById(id).map(mapper::convertToDto).orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
+        return repository.findById(id).map(mapper::convertToDto)
+                .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
     }
 
     public PerifericoDTO create(@Valid PerifericoDTO dto) {
@@ -72,7 +75,7 @@ public class PerifericoService {
                 .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
 
         // Defina o diretório onde os arquivos serão salvos
-        String uploadDir = "C:\\nota-fiscais\\periferico-nfe\\";
+        String uploadDir = "\\192.168.254.32\\nota-fiscais\\public\\periferico-nfe\\";
         String fileName = periferico.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
         Path filePath = Paths.get(uploadDir + fileName);
 
