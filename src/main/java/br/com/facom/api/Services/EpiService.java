@@ -28,18 +28,29 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDate;
+import java.util.List;
+
 @Validated
 @Service
 public class EpiService {
 
     private final EpiRepository repository;
     private final EpiMapper mapper;
+    private final SimpMessagingTemplate messagingTemplate; // NOTIFICACAO
 
-    public EpiService(EpiRepository repository, EpiMapper mapper) {
-        this.mapper = mapper;
+    @Autowired
+    public EpiService(EpiRepository repository, EpiMapper mapper, SimpMessagingTemplate messagingTemplate) {
         this.repository = repository;
+        this.mapper = mapper;
+        this.messagingTemplate = messagingTemplate;
     }
 
+    // PAGINACAO
     public Pag<EpiDTO> list(@RequestParam(name = "p") @PositiveOrZero int pageNumber,
             @RequestParam(name = "s") @Positive @Max(50) int pageSize,
             @RequestParam(value = "sortBy", defaultValue = "nome") String sortBy,
@@ -73,27 +84,43 @@ public class EpiService {
         repository.delete(repository.findById(id).orElseThrow(() -> new RegistroNaoEncontradoHendler(id)));
     }
 
+    // UPLOAD DE ARQUIVOS
     public String storeFile(Long id, MultipartFile file) throws IOException {
         EpiModel epi = repository.findById(id)
                 .orElseThrow(() -> new RegistroNaoEncontradoHendler(id));
 
-        // Defina o diretório onde os arquivos serão salvos
-        String uploadDir = "\\192.168.254.32\\nota-fiscais\\public\\eqp-nfe\\";
-        String fileName = epi.getId() + "_" + file.getOriginalFilename(); // Nome único do arquivo
+        // DIRETORIO DE SALVAMENTO DOS ARQUVIOS
+        String uploadDir = "C:/uploads/epi-files/";
+        String fileName = epi.getId() + "_" + file.getOriginalFilename(); // RENOMEANDO O ARQUIVO PARA O MESMO TER O NOME UNICO
         Path filePath = Paths.get(uploadDir + fileName);
 
-        // Salve o arquivo no caminho definido
+        // SALVANDO O ARQUIVO NO DIRETORIO
         Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
 
-        // Atualize os campos do EPI com os metadados do arquivo
+        // ATUALIZANDO CAMPOS DO EPI COM OS DADOS DO ARQUIVO
         epi.setFileName(fileName);
         epi.setFileType(file.getContentType());
-        epi.setFilePath(filePath.toString()); // Aqui estamos preenchendo o caminho do arquivo
+        epi.setFilePath(filePath.toString());
 
-        // Salve a entidade EPI com as informações atualizadas
+        // SALVANDO EPI COM OS DADOS ATUALIZADOS
         EpiModel updatedEpi = repository.save(epi);
 
         return fileName;
+    }
+
+    // BUSCAR EQUIPAMENTOS COM DATA DE GARANTIA IGUAL A DATA ATUAL
+    public List<EpiModel> findEquipamentosComGarantiaExpirada() {
+        LocalDate hoje = LocalDate.now();
+        return repository.findByDataGarantia(hoje);
+    }
+
+    // ENVIAR NOTIFICAÇÕES
+    public void enviarNotificacoesGarantia() {
+        List<EpiModel> equipamentos = findEquipamentosComGarantiaExpirada();
+        for (EpiModel equipamento : equipamentos) {
+            String mensagem = "Equipamento: " + equipamento.getNome() + " (Patrimônio: " + equipamento.getPatrimonio() + ") expirou a data de garantia!";
+            messagingTemplate.convertAndSend("/topic/notifications", mensagem); // ENVIA A NOTIFICACAO
+        }
     }
 
 }

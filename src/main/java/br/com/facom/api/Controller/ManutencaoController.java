@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -33,8 +35,20 @@ public class ManutencaoController {
             return ResponseEntity.badRequest().body("Arquivo Invalido. O arquivo está vazio.");
         }
 
-        String fileName = service.storeFile(id, file);
-        return ResponseEntity.ok("Sucesso no Upload do Arquivo: " + fileName);
+        // Lista de tipos MIME permitidos
+        String contentType = file.getContentType();
+        List<String> allowedTypes = Arrays.asList("application/pdf", "image/jpeg", "image/png");
+
+        if (!allowedTypes.contains(contentType)) {
+            return ResponseEntity.badRequest().body("Tipo de arquivo não suportado.");
+        }
+
+        try {
+            String fileName = service.storeFile(id, file);
+            return ResponseEntity.ok("Sucesso no Upload do Arquivo: " + fileName);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro ao salvar o arquivo.");
+        }
     }
 
     @GetMapping

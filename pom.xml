@@ -32,6 +32,14 @@
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-websocket</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-quartz</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jdbc</artifactId>
 		</dependency>
 		<dependency>
@@ -67,6 +75,11 @@
             <artifactId>jakarta.validation-api</artifactId>
             <version>3.0.2</version>
         </dependency>
+		<dependency>
+			<groupId>com.squareup.okhttp3</groupId>
+			<artifactId>okhttp</artifactId>
+			<version>4.9.3</version>
+		</dependency>
 		<dependency>
 			<groupId>com.github.java-json-tools</groupId>
 			<artifactId>json-patch</artifactId>
